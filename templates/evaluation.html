@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Axiom · Evaluation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css?v=2" />
+  <link rel="stylesheet" href="/static/eval.css?v=1" />
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="shell">
+    <aside class="rail">
+      <a class="brand" href="/">
+        <div class="mark" aria-hidden="true"></div>
+        <div><strong>AXIOM</strong><small>SELF-RAG COPILOT</small></div>
+      </a>
+
+      <div class="rail-label">CONTROL CENTER</div>
+      <nav class="nav">
+        <button class="nav-item" onclick="location.href='/'"><span>◈</span> Incident Copilot</button>
+        <button class="nav-item active"><span>▤</span> Evaluation</button>
+      </nav>
+
+      <section class="upload-panel ev-legend-panel">
+        <div class="eyebrow">HOW IT'S MEASURED</div>
+        <h3>Metric guide</h3>
+        <dl class="ev-defs">
+          <dt>Faithfulness ↑</dt><dd>Share of answer claims that the retrieved evidence supports.</dd>
+          <dt>Hallucination rate ↓</dt><dd>Share of claims the evidence does <em>not</em> support.</dd>
+          <dt>Context precision ↑</dt><dd>Share of retrieved chunks that are actually relevant.</dd>
+          <dt>Context sufficiency ↑</dt><dd>Does the evidence contain what's needed to answer?</dd>
+          <dt>Answer relevancy ↑</dt><dd>Does the answer address the question asked?</dd>
+          <dt>Answer completeness ↑</dt><dd>Does it cover every part of the question?</dd>
+        </dl>
+        <p class="ev-fine">Reference-free LLM-judge, same rubric for both systems. Naive RAG = same Pinecone index, top-k chunks, one prompt, no grading or verification.</p>
+      </section>
+
+      <div class="rail-footer">
+        <span class="live-dot"></span>
+        <div><strong>Evaluation</strong><small>Self-RAG vs Naive RAG</small></div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">SELF-RAG VS NAIVE RAG</div>
+          <h1>Evaluation</h1>
+          <p>Ask any question. Both pipelines answer it, an independent judge scores hallucination, retrieval quality and answer quality, and the results accumulate into the charts below.</p>
+        </div>
+        <div class="topbar-actions">
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light mode" title="Switch to light mode"><span id="themeIcon" aria-hidden="true">☼</span></button>
+        </div>
+      </header>
+
+      <div class="ev-body" id="evBody">
+        <section class="ev-card ev-run">
+          <div class="ev-run-row">
+            <textarea id="evQuestion" rows="2" placeholder="Type any question to evaluate, e.g. “What is the maximum replica count the payments autoscaler can reach?”"></textarea>
+            <button id="evRun" class="ev-primary">Evaluate</button>
+          </div>
+          <div class="ev-run-row2">
+            <div id="evSamples" class="starters ev-samples"></div>
+            <div class="ev-run-actions">
+              <button id="evBench" class="ev-ghost" title="Run the 8 sample questions one after another">Run sample benchmark</button>
+              <button id="evClear" class="ev-ghost ev-danger" title="Delete all saved evaluation runs">Clear history</button>
+            </div>
+          </div>
+          <div id="evStatus" class="ev-status" role="status" aria-live="polite"></div>
+        </section>
+
+        <section id="evVerdict" class="ev-verdict" hidden></section>
+
+        <section id="evQuery" hidden>
+          <h2 class="ev-h"><span id="evQueryTitle">Latest query</span></h2>
+          <div class="ev-legend" id="evLegend1"></div>
+          <div class="ev-grid2 ev-main">
+            <article class="ev-card"><h3>All metrics for this query</h3><p class="ev-sub">Naive RAG vs Self-RAG (0–100%; for hallucination rate lower is better)</p><div id="chAll" class="ev-chart"></div></article>
+            <article class="ev-card"><h3>Scorecard</h3><p class="ev-sub">Table view of this query</p><div id="evTable"></div></article>
+          </div>
+          <div id="evCompare" class="ev-grid2"></div>
+        </section>
+
+        <section id="evAgg">
+          <h2 class="ev-h"><span>All evaluated queries</span> <small id="evAggCount"></small></h2>
+          <div id="evAggEmpty" class="ev-empty">No evaluations yet. Run a query or the sample benchmark to populate these charts.</div>
+          <div id="evAggBody" hidden>
+            <div class="ev-legend" id="evLegend2"></div>
+            <article class="ev-card"><h3>Average score per metric</h3><p class="ev-sub">Mean across all evaluated queries (0–100%; for hallucination rate lower is better)</p><div id="chAvg" class="ev-chart"></div></article>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="ev-h"><span>Run history</span> <small>click a row to reopen it</small></h2>
+          <div class="ev-card ev-tablewrap"><table class="ev-table" id="evHistory"><thead>
+            <tr><th>Question</th><th>Hallucination ↓<br><small>Naive → Self</small></th><th>Faithfulness<br><small>Naive → Self</small></th><th>Ctx precision<br><small>Naive → Self</small></th><th>Relevancy<br><small>Naive → Self</small></th><th>Latency (s)<br><small>Naive → Self</small></th></tr>
+          </thead><tbody></tbody></table></div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <div id="evTip" class="ev-tip" hidden></div>
+<script src="/static/eval.js?v=1"></script>
+</body>
+</html>

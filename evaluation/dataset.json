@@ -1,0 +1,340 @@
+[
+  {
+    "id": "Q01",
+    "question": "What should the on-call engineer check first when checkout starts returning 502 errors right after a deployment?",
+    "relevant_sources": [
+      "checkout-api-runbook.md"
+    ],
+    "expected_points": [
+      "Compare incident start time with deployment timestamp",
+      "Check checkout-api deployment and pod status",
+      "Inspect readiness-probe failures before restarting pods"
+    ]
+  },
+  {
+    "id": "Q02",
+    "question": "How do I verify whether the checkout API pods are ready to receive production traffic?",
+    "relevant_sources": [
+      "checkout-api-runbook.md"
+    ],
+    "expected_points": [
+      "Inspect readiness-probe failures",
+      "Pods failing readiness must not receive production traffic"
+    ]
+  },
+  {
+    "id": "Q03",
+    "question": "Which logs should I inspect for checkout API startup failures after a release?",
+    "relevant_sources": [
+      "checkout-api-runbook.md"
+    ],
+    "expected_points": [
+      "Review latest checkout-api application logs",
+      "Look for startup, dependency, or configuration errors"
+    ]
+  },
+  {
+    "id": "Q04",
+    "question": "A new checkout release may have missing configuration. What should I verify?",
+    "relevant_sources": [
+      "checkout-api-runbook.md"
+    ],
+    "expected_points": [
+      "Verify required environment variables and secrets are present in the new deployment"
+    ]
+  },
+  {
+    "id": "Q05",
+    "question": "Checkout requests are failing and I suspect a dependency connection problem. Which dependencies should I check?",
+    "relevant_sources": [
+      "checkout-api-runbook.md"
+    ],
+    "expected_points": [
+      "Check connectivity from checkout-api to Payment Gateway and Orders database"
+    ]
+  },
+  {
+    "id": "Q06",
+    "question": "When does the checkout runbook say to roll back a release because of 502 errors?",
+    "relevant_sources": [
+      "checkout-api-runbook.md"
+    ],
+    "expected_points": [
+      "Incident strongly correlated with new release",
+      "Error rate above 5% for five minutes",
+      "Use approved rollback procedure"
+    ]
+  },
+  {
+    "id": "Q07",
+    "question": "Should we repeatedly delete checkout pods as the first troubleshooting step?",
+    "relevant_sources": [
+      "checkout-api-runbook.md"
+    ],
+    "expected_points": [
+      "Do not delete pods repeatedly as a first response",
+      "Preserve logs and events"
+    ]
+  },
+  {
+    "id": "Q08",
+    "question": "When should a checkout incident be escalated to the platform team?",
+    "relevant_sources": [
+      "checkout-api-runbook.md"
+    ],
+    "expected_points": [
+      "Load balancer cannot reach healthy checkout-api pods while readiness checks pass"
+    ]
+  },
+  {
+    "id": "Q09",
+    "question": "When should checkout connection-pool errors be escalated to the database team?",
+    "relevant_sources": [
+      "checkout-api-runbook.md"
+    ],
+    "expected_points": [
+      "Escalate when connection-pool errors continue after application rollback"
+    ]
+  },
+  {
+    "id": "Q10",
+    "question": "What services and data stores does the checkout API depend on according to its runbook?",
+    "relevant_sources": [
+      "checkout-api-runbook.md"
+    ],
+    "expected_points": [
+      "Payment Gateway",
+      "Inventory Service",
+      "Redis session cache",
+      "PostgreSQL Orders database"
+    ]
+  },
+  {
+    "id": "Q11",
+    "question": "What checks should be completed before rolling back a production deployment?",
+    "relevant_sources": [
+      "deployment-rollback-sop.md"
+    ],
+    "expected_points": [
+      "Confirm deployed image/version and last known healthy version",
+      "Capture logs, Kubernetes events, dashboard screenshots",
+      "Announce rollback in incident channel",
+      "Check database migration backward compatibility"
+    ]
+  },
+  {
+    "id": "Q12",
+    "question": "What evidence should be preserved before a rollback?",
+    "relevant_sources": [
+      "deployment-rollback-sop.md"
+    ],
+    "expected_points": [
+      "Capture relevant application logs",
+      "Capture Kubernetes events",
+      "Capture dashboard screenshots"
+    ]
+  },
+  {
+    "id": "Q13",
+    "question": "Why must database migration compatibility be checked before an application rollback?",
+    "relevant_sources": [
+      "deployment-rollback-sop.md"
+    ],
+    "expected_points": [
+      "Verify database migrations are backward-compatible before rolling back application code"
+    ]
+  },
+  {
+    "id": "Q14",
+    "question": "How should an operator execute a rollback according to the SOP?",
+    "relevant_sources": [
+      "deployment-rollback-sop.md"
+    ],
+    "expected_points": [
+      "Use the deployment platform's approved rollback action",
+      "Restore last known healthy application image",
+      "Do not manually edit production containers"
+    ]
+  },
+  {
+    "id": "Q15",
+    "question": "What needs to be checked immediately after a rollback?",
+    "relevant_sources": [
+      "deployment-rollback-sop.md"
+    ],
+    "expected_points": [
+      "Verify readiness",
+      "Verify error rate and latency",
+      "Run at least one business-level health check"
+    ]
+  },
+  {
+    "id": "Q16",
+    "question": "When can the incident be closed after a rollback?",
+    "relevant_sources": [
+      "deployment-rollback-sop.md"
+    ],
+    "expected_points": [
+      "Keep incident open until metrics remain stable for 15 minutes"
+    ]
+  },
+  {
+    "id": "Q17",
+    "question": "Is a rollback always the first option for any production regression?",
+    "relevant_sources": [
+      "deployment-rollback-sop.md"
+    ],
+    "expected_points": [
+      "Rollback appropriate when new version strongly correlates with customer-impacting regression",
+      "Consider whether safe configuration change is faster"
+    ]
+  },
+  {
+    "id": "Q18",
+    "question": "What should be confirmed about the currently deployed version before rollback?",
+    "relevant_sources": [
+      "deployment-rollback-sop.md"
+    ],
+    "expected_points": [
+      "Confirm currently deployed image/version",
+      "Identify last known healthy version"
+    ]
+  },
+  {
+    "id": "Q19",
+    "question": "When should the payments high-CPU procedure be started?",
+    "relevant_sources": [
+      "payments-high-cpu-runbook.md"
+    ],
+    "expected_points": [
+      "Average CPU above 85% for 10 minutes",
+      "Or latency rises together with CPU saturation"
+    ]
+  },
+  {
+    "id": "Q20",
+    "question": "What should I check to determine whether payments CPU usage is caused by increased traffic?",
+    "relevant_sources": [
+      "payments-high-cpu-runbook.md"
+    ],
+    "expected_points": [
+      "Confirm whether traffic volume increased abnormally"
+    ]
+  },
+  {
+    "id": "Q21",
+    "question": "How can I identify a single overloaded payments replica?",
+    "relevant_sources": [
+      "payments-high-cpu-runbook.md"
+    ],
+    "expected_points": [
+      "Compare CPU across replicas",
+      "One hot replica may indicate stuck worker or uneven traffic distribution"
+    ]
+  },
+  {
+    "id": "Q22",
+    "question": "Which service metrics should be reviewed before scaling payments replicas?",
+    "relevant_sources": [
+      "payments-high-cpu-runbook.md"
+    ],
+    "expected_points": [
+      "Application latency",
+      "Request rate",
+      "Error rate",
+      "Queue depth"
+    ]
+  },
+  {
+    "id": "Q23",
+    "question": "What recent changes should be inspected during a payments high-CPU incident?",
+    "relevant_sources": [
+      "payments-high-cpu-runbook.md"
+    ],
+    "expected_points": [
+      "Inspect recent deployments and feature-flag changes"
+    ]
+  },
+  {
+    "id": "Q24",
+    "question": "What log patterns can explain unusually high CPU in the payments service?",
+    "relevant_sources": [
+      "payments-high-cpu-runbook.md"
+    ],
+    "expected_points": [
+      "Retry storms",
+      "Timeout loops",
+      "Serialization errors",
+      "Unusually expensive requests"
+    ]
+  },
+  {
+    "id": "Q25",
+    "question": "When is scaling replicas appropriate for the payments service?",
+    "relevant_sources": [
+      "payments-high-cpu-runbook.md"
+    ],
+    "expected_points": [
+      "Service is healthy but capacity is insufficient",
+      "Scale according to approved production autoscaling limit"
+    ]
+  },
+  {
+    "id": "Q26",
+    "question": "What should be done if payments CPU spikes after deployment and customer impact is increasing?",
+    "relevant_sources": [
+      "payments-high-cpu-runbook.md",
+      "deployment-rollback-sop.md"
+    ],
+    "expected_points": [
+      "Use rollback procedure rather than continuing to scale a faulty release",
+      "Follow approved rollback procedure"
+    ]
+  },
+  {
+    "id": "Q27",
+    "question": "Can an operator disable CPU limits during a payments incident to reduce CPU pressure?",
+    "relevant_sources": [
+      "payments-high-cpu-runbook.md"
+    ],
+    "expected_points": [
+      "Do not disable CPU limits or remove production resource controls without platform-team approval"
+    ]
+  },
+  {
+    "id": "Q28",
+    "question": "A payments service has high CPU and rising latency. What is the trigger condition in the runbook?",
+    "relevant_sources": [
+      "payments-high-cpu-runbook.md"
+    ],
+    "expected_points": [
+      "CPU above 85% for 10 minutes or latency rising together with CPU saturation"
+    ]
+  },
+  {
+    "id": "Q29",
+    "question": "What should be reviewed before deciding to scale or roll back a high-CPU payments service?",
+    "relevant_sources": [
+      "payments-high-cpu-runbook.md"
+    ],
+    "expected_points": [
+      "Traffic volume",
+      "CPU across replicas",
+      "Latency, request rate, error rate, queue depth",
+      "Recent deployments and feature flags"
+    ]
+  },
+  {
+    "id": "Q30",
+    "question": "What post-rollback checks apply to both a checkout incident and the general deployment SOP?",
+    "relevant_sources": [
+      "checkout-api-runbook.md",
+      "deployment-rollback-sop.md"
+    ],
+    "expected_points": [
+      "Use approved rollback procedure",
+      "Verify health/readiness and error behavior after rollback",
+      "Preserve relevant logs/events"
+    ]
+  }
+]
